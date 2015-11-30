@@ -19,6 +19,7 @@
 
 #SBATCH --job-name flink-slurm
 #SBATCH --nodes=8
+#SBATCH --exclusive
 
 USAGE="Usage: sbatch -p<PARTITION> -A<ACCOUNT> flink-slurm-example.sh"
 
@@ -75,11 +76,11 @@ echo
 
 echo "Starting master on ${FLINK_MASTER} and slaves on ${FLINK_SLAVES[@]}."
 srun --nodes=1-1 --nodelist=${FLINK_MASTER} "${FLINK_HOME}"/bin/start-slurm.sh batch
-sleep 60
+sleep 120
 
-"${FLINK_HOME}"/bin/flink run "${FLINK_HOME}"/examples/EnumTrianglesBasic.jar
+"${FLINK_HOME}"/bin/flink run "${FLINK_HOME}"/examples/EnumTrianglesBasic.jar file://$HOME/flink-slurm/edges.csv file://$HOME/flink-slurm/triangles.csv
 
 srun --nodes=1-1 --nodelist=${FLINK_MASTER} "${FLINK_HOME}"/bin/stop-slurm.sh
-sleep 60
+sleep 120
 
 echo "Done."
